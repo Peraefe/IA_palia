@@ -1,4 +1,5 @@
 carrot = {
+    'nome': 'carrot',
     'id': 1,
     'bonus': None,
     'price': 23,
@@ -6,6 +7,7 @@ carrot = {
     'qty': 2
 }
 corn = {
+    'nome': 'corn',
     'id': 2,
     'bonus': 'qualidade',
     'price': 40,
@@ -13,6 +15,7 @@ corn = {
     'qty': 2
 }
 cotton = {
+    'nome': 'cotton',
     'id': 3,
     'bonus': 'qualidade',
     'price': 45,
@@ -20,6 +23,7 @@ cotton = {
     'qty': 2
 }
 onion = {
+    'nome': 'onion',
     'id': 4,
     'bonus': None,
     'price': 30,
@@ -27,6 +31,7 @@ onion = {
     'qty': 2
 }
 potato = {
+    'nome': 'potato',
     'id': 5,
     'bonus': None,
     'price': 45,
@@ -34,6 +39,7 @@ potato = {
     'qty': 2
 }
 rice = {
+    'nome': 'rice',
     'id': 6,
     'bonus': 'quantidade',
     'price': 27,
@@ -41,6 +47,7 @@ rice = {
     'qty': 2
 }
 tomato = {
+    'nome': 'tomato',
     'id': 7,
     'bonus': None,
     'price': 23,
@@ -48,6 +55,7 @@ tomato = {
     'qty': 8
 }
 wheat = {
+    'nome': 'wheat',
     'id': 8,
     'bonus': 'quantidade',
     'price': 33,
