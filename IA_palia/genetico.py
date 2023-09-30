@@ -2,7 +2,7 @@ from numpy.random import choice
 import numpy as np
 from crops import *
 from percent import *
-from matrepr import mdisplay, mprint
+from matrepr import mprint
 
 plots,dias = (9, 30)
 cromossomo = [[None for i in range(plots)]for j in range(dias)]
@@ -14,10 +14,6 @@ mutacao = 0.01
 
 #print(f'choice(crops)[id]: {(choice(crops))["id"]}')
 
-#for individuo in populacao:
-#    #print(f'individuo: {individuo}')
-#    for plotPorDia in cromossomo:
-#        individuo[plotPorDia]=int((choice(crops))["id"])
 def start_populacao():        
     for individuo in populacao:
         cont_dias = 0
@@ -30,19 +26,31 @@ def start_populacao():
                     #print(f'crop: {crop["nome"]}')
                     if (cont_dias + (crop['time'])<31):
                         for dia in range(crop['time']):
-                            #print("dia:",dia)
-                            #print("cont_dias:", cont_dias)
-                            individuo[(cont_dias + dia)][plot] = crop['nome']
+                            if crop['nome'] == 'tomato':
+                                if (dia == 0) or (dia == 4) or (dia == 6) or (dia == 8):
+                                    individuo[(cont_dias + dia)][plot] = crop['nome']
+                                else:
+                                    individuo[(cont_dias + dia)][plot] = 'crescendo'
+                                
+                            else:
+                                if dia == 0:
+                                    individuo[(cont_dias + dia)][plot] = crop['nome']
+                                else:
+                                    individuo[(cont_dias + dia)][plot] = 'crescendo'
+                                #print("dia:",dia)
+                                #print("cont_dias:", cont_dias)
+                            
                     else:
                         break                
-                        
-                    #individuo[plotPorDia]=int((choice(crops))["id"])
+            
                 else:
                     continue 
             cont_dias += 1
-            
-        #mprint(individuo)
         
+        #Printando cada indivíduo:
+        mprint(individuo)
+        
+start_populacao()
 
         
 #Algoritmo genético tem:
