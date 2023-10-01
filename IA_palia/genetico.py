@@ -150,14 +150,11 @@ def CalculaFitness(populacao):
                         else:
                             producePrice = crop*choice(noBonus)
                             #print("nenhum")  
-                        print("producePrice:",producePrice)
+                        #print("producePrice:",producePrice)
                         fitness[contFitness] += producePrice
                 #print(f'individuo[dia][campo]: {individuo[dia][campo-1]}')
                 campo+=1 
             dia+=1
-        #for item in produce:
-        #    if item == 'carrot':
-        #        item == (crops[0]['price'])
         contFitness += 1            
     return fitness
 
@@ -168,7 +165,7 @@ StartPopulacao()
 
 CalculaFitness(populacao)
 
-print(crops[0]['price'])
+
         
 #Algoritmo genético tem:
 
