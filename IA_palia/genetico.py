@@ -14,9 +14,9 @@ mutacao = 0.01
 
 #print(f'choice(crops)[id]: {(choice(crops))["id"]}')
 
-def start_populacao():        
+def StartPopulacao():        
     for individuo in populacao:
-        cont_dias = 0
+        contDias = 0
         for plotPorDia in (individuo):
             #print(f'plotPorDia: {plotPorDia}')
             for plot in range(plots):
@@ -24,34 +24,151 @@ def start_populacao():
                 if plotPorDia[plot] == None:
                     crop = (choice(crops))
                     #print(f'crop: {crop["nome"]}')
-                    if (cont_dias + (crop['time'])<31):
+                    if (contDias + (crop['time'])<31):
                         for dia in range(crop['time']):
                             if crop['nome'] == 'tomato':
-                                if (dia == 0) or (dia == 4) or (dia == 6) or (dia == 8):
-                                    individuo[(cont_dias + dia)][plot] = crop['nome']
+                                if (dia == 10) or (dia == 4) or (dia == 6) or (dia == 8):
+                                    individuo[(contDias + dia)][plot] = (f'colhe {crop["nome"]}')
                                 else:
-                                    individuo[(cont_dias + dia)][plot] = 'crescendo'
-                                
+                                    individuo[(contDias + dia)][plot] = crop["nome"]
                             else:
-                                if dia == 0:
-                                    individuo[(cont_dias + dia)][plot] = crop['nome']
+                                if dia == (crop['time']-1):
+                                    individuo[(contDias + dia)][plot] = (f'colhe {crop["nome"]}')
                                 else:
-                                    individuo[(cont_dias + dia)][plot] = 'crescendo'
+                                    individuo[(contDias + dia)][plot] = crop['nome']
                                 #print("dia:",dia)
-                                #print("cont_dias:", cont_dias)
-                            
+                                #print("contDias:", contDias)      
                     else:
                         break                
-            
                 else:
                     continue 
-            cont_dias += 1
+            contDias += 1
         
         #Printando cada indivíduo:
-        mprint(individuo)
+        #mprint(individuo)
         
-start_populacao()
+    return populacao
 
+def VizinhosQualidade(individuo,dia,campo):
+    vizinhos = [None]*8
+    for i in range(8):
+        if i==0:
+            x=-1
+            y=-1
+        elif i==1:
+            x=-1
+            y=0
+        elif i==2:
+            x=-1
+            y=1
+        elif i==3:
+            x=0
+            y=-1
+        elif i==4:
+            x=0
+            y=1
+        elif i==5:
+            x=1
+            y=-1
+        elif i==6:
+            x=1
+            y=0
+        elif i==7:
+            x=1
+            y=1
+        try:
+            vizinhos[i]=individuo[dia+x][campo+y]
+        except IndexError:
+            vizinhos[i]=None
+    if 'corn' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+        return True
+    if 'cotton' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+        return True
+    return False
+
+def VizinhosQuantidade(individuo,dia,campo):
+    vizinhos = [None]*8
+    for i in range(8):
+        if i==0:
+            x=-1
+            y=-1
+        elif i==1:
+            x=-1
+            y=0
+        elif i==2:
+            x=-1
+            y=1
+        elif i==3:
+            x=0
+            y=-1
+        elif i==4:
+            x=0
+            y=1
+        elif i==5:
+            x=1
+            y=-1
+        elif i==6:
+            x=1
+            y=0
+        elif i==7:
+            x=1
+            y=1
+        try:
+            vizinhos[i]=individuo[dia+x][campo+y]
+        except IndexError:
+            vizinhos[i]=None
+    if 'rice' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+        return True
+    if 'wheat' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+        return True
+    return False
+        
+        
+        
+def CalculaFitness(populacao): 
+    fitness = [0 for i in range(10)]
+    contFitness = 0
+    for individuo in populacao:
+        dia = 0
+        for plotPorDia in individuo:
+            campo = 0
+            for plot in plotPorDia:
+                producePrice = 0
+                if plot != None:
+                    if plot[0:5]=='colhe':
+                        crop = [crop['price'] for crop in crops if crop['nome']==plot[6:len(plot)]]  
+                        crop = crop[0]
+                        if VizinhosQuantidade(individuo,dia,campo) and VizinhosQualidade(individuo,dia,campo):
+                            producePrice = crop*choice(bothBonus)
+                            #print("both")     
+                        elif VizinhosQuantidade(individuo,dia,campo):
+                            producePrice = crop*choice(quantityBonus)
+                            #print("quantidade")      
+                        elif VizinhosQualidade(individuo,dia,campo):
+                            producePrice = crop*choice(qualityBonus)
+                            #print("qualidade")  
+                        else:
+                            producePrice = crop*choice(noBonus)
+                            #print("nenhum")  
+                        print("producePrice:",producePrice)
+                        fitness[contFitness] += producePrice
+                #print(f'individuo[dia][campo]: {individuo[dia][campo-1]}')
+                campo+=1 
+            dia+=1
+        #for item in produce:
+        #    if item == 'carrot':
+        #        item == (crops[0]['price'])
+        contFitness += 1            
+    return fitness
+
+#def Cruzamento:
+    
+
+StartPopulacao()
+
+CalculaFitness(populacao)
+
+print(crops[0]['price'])
         
 #Algoritmo genético tem:
 

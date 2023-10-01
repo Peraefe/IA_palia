@@ -52,7 +52,7 @@ tomato = {
     'bonus': None,
     'price': 23,
     'time': 10,
-    'qty': 8
+    'qty': 2 #8 mas colhe 4 vezes, cada vez dá 2
 }
 wheat = {
     'nome': 'wheat',
