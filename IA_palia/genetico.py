@@ -5,12 +5,12 @@ from percent import *
 from matrepr import mprint
 
 plots,dias = (9, 30)
-cromossomo = [[None for i in range(plots)]for j in range(dias)]
+cromossomo = [['' for i in range(plots)]for j in range(dias)]
 populacao = [cromossomo for i in range(10)]
 #print(f'Cromossomo: \n{np.matrix(cromossomo)}')
 #print(f'População: \n{np.array(populacao)}')
 cruzamentos = 5
-geracoes = 5
+geracoes = 10
 mutacao = 0.01
 
 #print(f'choice(crops)[id]: {(choice(crops))["id"]}')
@@ -22,7 +22,7 @@ def StartPopulacao():
             #print(f'plotPorDia: {plotPorDia}')
             for plot in range(plots):
                 #print("plotAtual: ", {plotPorDia[plot]})
-                if plotPorDia[plot] == None:
+                if plotPorDia[plot] == '':
                     crop = (choice(crops))
                     #print(f'crop: {crop["nome"]}')
                     if (contDias + (crop['time'])<31):
@@ -51,80 +51,56 @@ def StartPopulacao():
     return populacao
 
 def VizinhosQualidade(individuo,dia,campo):
-    vizinhos = [None]*8
-    for i in range(8):
+    vizinhos = ['']*4
+    for i in range(4):
         if i==0:
             x=-1
-            y=-1
-        elif i==1:
-            x=-1
             y=0
+        elif i==1:
+            x=0
+            y=-1
         elif i==2:
-            x=-1
+            x=0
             y=1
         elif i==3:
-            x=0
-            y=-1
-        elif i==4:
-            x=0
-            y=1
-        elif i==5:
-            x=1
-            y=-1
-        elif i==6:
             x=1
             y=0
-        elif i==7:
-            x=1
-            y=1
         try:
             vizinhos[i]=individuo[dia+x][campo+y]
-            if vizinhos[i]!=None:
+            if vizinhos[i]!='':
                 if vizinhos[i][0:5]=='colhe':
                     vizinhos[i]=vizinhos[i][6:(len(vizinhos[i]))] 
         except IndexError:
-            vizinhos[i]=None
-    if 'corn' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+            vizinhos[i]=''
+    if 'corn' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3]}:
         return True
-    if 'cotton' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+    if 'cotton' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3]}:
         return True
     
     return False
 
 def VizinhosQuantidade(individuo,dia,campo):
-    vizinhos = [None]*8
-    for i in range(8):
+    vizinhos = ['']*4
+    for i in range(4):
         if i==0:
             x=-1
-            y=-1
-        elif i==1:
-            x=-1
             y=0
+        elif i==1:
+            x=0
+            y=-1
         elif i==2:
-            x=-1
+            x=0
             y=1
         elif i==3:
-            x=0
-            y=-1
-        elif i==4:
-            x=0
-            y=1
-        elif i==5:
-            x=1
-            y=-1
-        elif i==6:
             x=1
             y=0
-        elif i==7:
-            x=1
-            y=1
         try:
             vizinhos[i]=individuo[dia+x][campo+y]
         except IndexError:
-            vizinhos[i]=None
-    if 'rice' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+            vizinhos[i]=''
+    if 'rice' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3]}:
         return True
-    if 'wheat' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3],vizinhos[4],vizinhos[5],vizinhos[6],vizinhos[7]}:
+    if 'wheat' in {vizinhos[0],vizinhos[1],vizinhos[2],vizinhos[3]}:
         return True
     return False
         
@@ -139,7 +115,7 @@ def CalculaFitness(populacao):
             campo = 0
             for plot in plotPorDia:
                 producePrice = 0
-                if plot != None:
+                if plot != '':
                     if plot[0:5]=='colhe':
                         crop = [crop['price'] for crop in crops if crop['nome']==plot[6:len(plot)]]  
                         crop = crop[0]
@@ -164,8 +140,8 @@ def CalculaFitness(populacao):
     return fitness
 
 def Cruzamento(populacao, fitness,cruzamentos):
-    filhos = [None]*cruzamentos
-    paisPossiveis = [None]*(int((len(fitness))/2))
+    filhos = ['']*cruzamentos
+    paisPossiveis = ['']*(int((len(fitness))/2))
     aux = fitness.copy()
     #print("aux:",aux)
     for i in range(len(paisPossiveis)):
@@ -189,7 +165,7 @@ def Cruzamento(populacao, fitness,cruzamentos):
             #print("Antes:")
             #mprint(pai2Tratado,max_rows=None,max_cols=None)
             #print("i",i)
-            if pai2Tratado[0][i] != None:
+            if pai2Tratado[0][i] != '':
                 if pai2Tratado[0][i] == 'colhe tomato' or pai2Tratado[0][i] == 'tomato':
                     cont = 0
                     #print("pai2Tratado[cont][i]",pai2Tratado[cont][i])
@@ -200,33 +176,36 @@ def Cruzamento(populacao, fitness,cruzamentos):
                         continue
                     else:
                         cont2 = 0
-                        mprint(pai2Tratado,max_rows=None,max_cols=None)
+                        #mprint(pai2Tratado,max_rows=None,max_cols=None)
                         while pai2Tratado[cont2][i] == 'colhe tomato' or pai2Tratado[cont2][i] == 'tomato':
-                            print("pai2Tratado[cont2][i]",pai2Tratado[cont2][i])
-                            pai2Tratado[cont2][i] = None
-                            print("cont2:",cont2)
+                            #print("pai2Tratado[cont2][i]",pai2Tratado[cont2][i])
+                            pai2Tratado[cont2][i] = ''
+                            #print("cont2:",cont2)
                             if cont2 == 6:
                                 break
                             cont2+=1
                 elif pai2Tratado[0][i][0:5] == 'colhe':
-                    pai2Tratado[0][i] = None
+                    pai2Tratado[0][i] = ''
                 else:
                     contDias = 1
-                    mprint(pai2Tratado,max_rows=None,max_cols=None)
-                    print("i:",i)
+                    #mprint(pai2Tratado,max_rows=None,max_cols=None)
+                    #print("i:",i)
                     while pai2Tratado[contDias][i][0:5] != 'colhe':
-                        print("contDias:",contDias)
+                        #print("contDias:",contDias)
                         contDias += 1
-                    #print("cont",contDias)
-                    cropNome = pai2Tratado[contDias][i][6:(len(pai2Tratado[contDias][i]))]
-                    #print("nome:",cropNome)
-                    tempoCrescimento = [crop['time'] for crop in crops if crop['nome']==cropNome][0]
-                    #print("var:",tempoCrescimento)
-                    #print("tempo:",tempoCrescimento)
-                    #print("contDias:",contDias)
-                    if tempoCrescimento>(contDias+1):
-                        for k in range(contDias+1):
-                            pai2Tratado[k][i] = None 
+                        if contDias>13:
+                            break
+                    if contDias<14:
+                        #print("cont",contDias)
+                        cropNome = pai2Tratado[contDias][i][6:(len(pai2Tratado[contDias][i]))]
+                        #print("nome:",cropNome)
+                        tempoCrescimento = [crop['time'] for crop in crops if crop['nome']==cropNome][0]
+                        #print("var:",tempoCrescimento)
+                        #print("tempo:",tempoCrescimento)
+                        #print("contDias:",contDias)
+                        if tempoCrescimento>(contDias+1):
+                            for k in range(contDias+1):
+                                pai2Tratado[k][i] = '' 
             #print("paitratado")
             #mprint(pai2Tratado,max_rows=None,max_cols=None)       
         filho = pai1[0:15] + pai2Tratado
@@ -237,22 +216,22 @@ def Cruzamento(populacao, fitness,cruzamentos):
     
 def Mutacao(filhos):
     for filho in filhos:
-        porcentagem = [0 for i in range(100)]
-        for i in range(int(mutacao*100)):
+        porcentagem = [0 for i in range(1000)]
+        for i in range(int(mutacao*1000)):
             porcentagem[i]=1
         #print("filho antes de mutado:") 
         #mprint(filho,max_rows=None,max_cols=None)
         if choice(porcentagem)==1 or choice(porcentagem)==0:
             cropMutado = choice(crops)
             lugarMutacao = [(np.random.randint(30,size=1))[0],(np.random.randint(9,size=1))[0]]
-            print("lugar:",lugarMutacao)
-            print("cropMutado:",cropMutado)
-            if filho[lugarMutacao[0]][lugarMutacao[1]] != None:
+            #print("lugar:",lugarMutacao)
+            #print("cropMutado:",cropMutado)
+            if filho[lugarMutacao[0]][lugarMutacao[1]] != '':
                 if (30-lugarMutacao[0]<cropMutado['time']):
                     if  cropMutado['nome'] != 'tomato':
                         for i in range(lugarMutacao[0],30):
                             #print("i",i)
-                            filho[i][lugarMutacao[1]] = None
+                            filho[i][lugarMutacao[1]] = ''
                     elif 30-lugarMutacao[0] > 3:
                         dia = 0
                         for i in range(lugarMutacao[0],30):
@@ -272,7 +251,7 @@ def Mutacao(filhos):
                         else:
                             filho[lugarMutacao[0]+i][lugarMutacao[1]] = cropMutado["nome"]
                     if (lugarMutacao[0]+cropMutado['time']-1)<30:
-                        print("valor:",(lugarMutacao[0]+cropMutado['time']-1))
+                        #print("valor:",(lugarMutacao[0]+cropMutado['time']-1))
                         if filho[lugarMutacao[0]][lugarMutacao[1]] == 'colhe tomato' or filho[lugarMutacao[0]][lugarMutacao[1]] == 'tomato':
                             cont = 1
                             while filho[cont][lugarMutacao[1]] == 'tomato':
@@ -282,22 +261,22 @@ def Mutacao(filhos):
                             else:
                                 cont = 0
                                 while filho[cont][lugarMutacao[1]] == 'colhe tomato' or filho[0][lugarMutacao[1]] == 'tomato':
-                                    filho[cont][lugarMutacao[1]] = None
+                                    filho[cont][lugarMutacao[1]] = ''
                                     cont+=1
-                        if filho[lugarMutacao[0]+cropMutado['time']-1][lugarMutacao[1]] != None:
+                        if filho[lugarMutacao[0]+cropMutado['time']-1][lugarMutacao[1]] != '':
                             i=0
-                            print("aksjdka:")
+                            #print("aksjdka:")
                             #mprint(filho,max_rows=None,max_cols=None)
                             if filho[lugarMutacao[0]+cropMutado['time']-1][lugarMutacao[1]][0:5] == 'colhe':
-                                filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]]=None
+                                filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]]=''
                             else:
                                 while(filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]][0:5]!='colhe'):
-                                    filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]]=None
+                                    filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]]=''
                                     i+=1
-                                    print("i",i)
+                                    #print("i",i)
                                     print("alterado:")
                                     print(filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]])
-                                filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]]=None
+                                filho[lugarMutacao[0]+cropMutado['time']+i-1][lugarMutacao[1]]=''
             #print("filho mutado:") 
             #mprint(filho,max_rows=None,max_cols=None)
     return filhos
@@ -305,34 +284,40 @@ def Mutacao(filhos):
 def EscolheNovaPopulacao(populacao,filhos,fitnessPopulacao,fitnessFilhos):
     antigaPopulacao = populacao+filhos
     novaPopulacao = [0 for i in range((len(populacao)))]
-    print("Fitnessfilhos",fitnessFilhos)
-    aux = fitnessPopulacao.copy()+fitnessFilhos.copy()
-    print("Aux:",aux)
+    #print("Fitnessfilhos",fitnessFilhos)
+    fitnessNovaPopulacao = fitnessPopulacao.copy()+fitnessFilhos.copy()
+    #print("fitnessNovaPopulacao:",fitnessNovaPopulacao)
     for i in range(len(populacao)):
-        index_max = np.argmax(aux)
-        aux[index_max] = 0
+        index_max = np.argmax(fitnessNovaPopulacao)
+        fitnessNovaPopulacao[index_max] = 0
         novaPopulacao[i] = antigaPopulacao[index_max]
         #print(f'paisPossiveis: {paisPossiveis}')
-        #print("aux:",aux)
+        #print("fitnessNovaPopulacao:",fitnessNovaPopulacao)
     #print("Nova:")
     #mprint(novaPopulacao[0],max_rows=None,max_cols=None)
     
-    return populacao
+    return populacao,fitnessNovaPopulacao
     
 
 populacao = StartPopulacao()
 
-for i in range(geracoes):
+
+for i in range(geracoes-1):
     fitnessPopulacao = CalculaFitness(populacao)
+    
+    print(f'Fitness Geração {i+1}: {fitnessPopulacao}')
 
     filhos = Cruzamento(populacao,fitnessPopulacao,(cruzamentos))
 
     fitnessFilhos = CalculaFitness(filhos)
 
-    print("fitness2",fitnessFilhos)
+    #print("fitness2",fitnessFilhos)
 
-    populacao = EscolheNovaPopulacao(populacao,filhos,fitnessPopulacao,fitnessFilhos)
+    populacao,fitnessNovapopulacao = EscolheNovaPopulacao(populacao,filhos,fitnessPopulacao,fitnessFilhos)
 
+fitnessPopulacao = CalculaFitness(populacao)    
+print(f'Fitness Geração {geracoes}: {fitnessPopulacao}')   
+#mprint(populacao[0],max_rows=None,max_cols=None)
 
 
         

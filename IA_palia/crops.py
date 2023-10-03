@@ -63,4 +63,4 @@ wheat = {
     'qty': 2
 }
 
-crops = [carrot, corn, cotton, onion, potato, rice, tomato, wheat]
+crops = [carrot, corn, cotton, onion, potato, rice, wheat]
